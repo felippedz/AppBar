@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron">
+    <h1 class="display-4">¡Bienvenidos, empleados!</h1>
+    <p class="lead">Esta es la plataforma centralizada para todas tus necesidades laborales. Aquí puedes gestionar tus proyectos, ver las noticias de la empresa, y mucho más.</p>
+    <hr class="my-4">
+    <p>Usa los enlaces rápidos a continuación para acceder a las secciones más utilizadas.</p>
+    <a class="btn btn-primary btn-lg" href="@Url.Action("Index", "Productoes")" role="button">Gestión de Productos</a>
+    <a class="btn btn-secondary btn-lg" href="@Url.Action("Index", "Pedidoes")" role="button">Solicitudes de Pedidos</a>
+    <a class="btn btn-warning btn-lg" href="@Url.Action("Index", "Usuarios")" role="button">Perfil</a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Noticias y Anuncios</h2>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Titulo</h5>
+                <p class="card-text">Contenido</p>
+                <p class="card-text"><small class="text-muted">Publicado el </small></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h2>Recursos Útiles</h2>
+        <ul class="list-group">
+            <li class="list-group-item"><a href="/docs/manual.pdf">Manual del Empleado</a></li>
+            <li class="list-group-item"><a href="/docs/politicas.pdf">Políticas de la Empresa</a></li>
+            <li class="list-group-item"><a href="/docs/formularios.pdf">Formularios Importantes</a></li>
+        </ul>
+    </div>
+</div>

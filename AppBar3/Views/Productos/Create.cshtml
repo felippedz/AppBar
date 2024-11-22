@@ -1,0 +1,85 @@
+﻿@model AppBar3.Models.Producto
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Agregar Producto</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdMarca" class="control-label">Marca</label>
+                <select asp-for="IdMarca" class="form-control" asp-items="ViewBag.IdMarca"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCategoria" class="control-label">Categoria</label>
+                <select asp-for="IdCategoria" class="form-control" asp-items="ViewBag.IdCategoria"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdEnvase" class="control-label">Envase</label>
+                <select asp-for="IdEnvase" class="form-control" asp-items="ViewBag.IdEnvase"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Precio" class="control-label"></label>
+                <input asp-for="Precio" class="form-control" type="number" step="0.01" onchange="actualizarPrecioVenta()" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrecioVenta" class="control-label">Precio de Venta</label>
+                <input type="hidden" asp-for="PrecioVenta" id="PrecioVentaHidden" />
+                <span id="PrecioVenta" class="form-control"></span>
+
+            </div>
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Agregar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-danger">Regresar</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script>
+       function actualizarPrecioVenta() {
+        // Obtén el valor del precio ingresado
+        const precioInput = document.querySelector('[id="Precio"]');
+        const precioVentaSpan = document.getElementById('PrecioVenta');
+        const precioVentaHidden = document.getElementById('PrecioVentaHidden');  // Campo oculto
+
+        const precio = parseFloat(precioInput.value);
+
+        // Verifica si el precio ingresado es válido
+        if (isNaN(precio) || precio < 0) {
+            precioVentaSpan.textContent = 'Ingrese un precio válido.'; // Mensaje de error
+            precioVentaSpan.style.color = 'red';
+            precioVentaHidden.value = ''; // Limpia el valor del campo oculto
+        } else {
+            const precioVenta = precio * 1.20; // Calcula el 20% adicional
+            precioVentaSpan.textContent = precioVenta.toFixed(2); // Muestra con dos decimales
+            precioVentaHidden.value = precioVenta.toFixed(2); // Asigna el valor al campo oculto
+            precioVentaSpan.style.color = ''; // Restablece color normal
+        }
+    }
+</script>

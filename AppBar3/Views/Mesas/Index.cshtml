@@ -1,0 +1,42 @@
+﻿@model IEnumerable<AppBar3.Models.Mesa>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Gestion de Mesas</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Agregar Mesas</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Nombre Mesa
+            </th>
+            <th>
+                Sede
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreMesa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdSedeNavigation.NombreSede)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> @* |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

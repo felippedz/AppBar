@@ -1,0 +1,31 @@
+Paquetes nuget a instalar
+EntityFramework
+EntityFramework.Core
+EntityFramework.SQL
+EntityFramework.Tools
+ClosedXML
+
+
+Ejecutar desde la consola de paquetes
+Scaffold-DbContext "server=localhost; database=AppBar; integrated security=true; TrustServerCertificate=Yes;" Microsoft.EntityFrameworkCore.SqlServer -OutPutDir Models
+
+add-migration Migracion1 
+
+
+Datos Fijos
+Tabla Sede
+Restrepo
+1 de Mayo
+Galerias
+Chia
+
+Tabla Roles
+Admin
+Cajero
+Mesero
+
+Reporte final
+ordenado por fecha
+id producto, nombre porducto, canti vendida, costo venta, precio venta, ganancia, sede
+
+

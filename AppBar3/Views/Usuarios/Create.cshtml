@@ -1,0 +1,89 @@
+﻿@model AppBar3.Models.Usuario
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Nuevo Usuario</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Apellido" class="control-label"></label>
+                <input asp-for="Apellido" class="form-control" />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdDocumento" class="control-label"></label>
+                <select asp-for="IdDocumento" class="form-control" asp-items="ViewBag.IdDocumento"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Documento" class="control-label"></label>
+                <input asp-for="Documento" class="form-control" />
+                <span asp-validation-for="Documento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Correo" class="control-label"></label>
+                <input asp-for="Correo" class="form-control" type="text" readonly />
+                <span asp-validation-for="Correo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" type="password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="IdSede" class="control-label">Sede</label>
+                <select asp-for="IdSede" class="form-control" asp-items="ViewBag.IdSede"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdRol" class="control-label">Rol</label>
+                <select asp-for="IdRol" class="form-control" asp-items="ViewBag.IdRol"></select>
+            </div>
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Agregar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-danger">Regresar</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script type="text/javascript">
+    // Función para generar el correo basado en nombre, apellido y sede
+    function generarCorreo() {
+        var nombre = document.getElementById('Nombre').value || '';
+        var apellido = document.getElementById('Apellido').value || '';
+        var sede = document.getElementById('IdSede').value || '';
+
+        // Generar correo en formato nombreapellidoSede@bar.com
+        var correo = nombre + apellido + sede + "'&#64;bar.com";  // Esto es correcto en JavaScript.
+
+        // Asignar el valor generado al campo de correo
+        document.getElementById('Correo').value = correo;
+    }
+
+    // Agregar eventos para actualizar el correo cuando cambian los campos
+    document.getElementById('Nombre').addEventListener('input', generarCorreo);
+    document.getElementById('Apellido').addEventListener('input', generarCorreo);
+    document.getElementById('IdSede').addEventListener('change', generarCorreo);
+</script>

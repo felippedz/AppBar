@@ -1,0 +1,115 @@
+﻿@model AppBar3.Models.DetallePedido
+
+@{
+    ViewData["Title"] = "Crear Detalle de Pedido";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Create">
+    <!-- Campo de solo lectura para el Pedido -->
+    <div class="form-group">
+        <label asp-for="IdPedido" class="control-label">Pedido</label>
+        <input type="text" class="form-control" value="@Model.IdPedido" readonly />
+    </div>
+
+    <!-- Campo de solo lectura para el nombre de la Mesa -->
+    <div class="form-group">
+        <label for="Mesa" class="control-label">Mesa</label>
+        <input type="text" class="form-control" value="@ViewData["Mesa"]" readonly />
+    </div>
+
+    <!-- Campo para seleccionar el Producto -->
+    <div class="form-group">
+        <label asp-for="IdProducto" class="control-label">Producto</label>
+        @Html.DropDownList("IdProducto", (SelectList)ViewData["Productos"], "Seleccione un Producto", new { @class = "form-control", required = "required", onchange = "obtenerPrecio()" })
+    </div>
+
+    <!-- Campo para ingresar la cantidad -->
+    <div class="form-group">
+        <label asp-for="Cantidad" class="control-label">Cantidad</label>
+        <input asp-for="Cantidad" class="form-control" oninput="calcularSubtotalYTotal()" required />
+    </div>
+
+    <!-- Campo para mostrar el Precio Unitario -->
+    <div class="form-group">
+        <label asp-for="PrecioUnitario" class="control-label">Precio Unitario</label>
+        <input asp-for="PrecioUnitario" class="form-control" readonly id="PrecioUnitario" />
+    </div>
+
+    <!-- Campo para mostrar el Subtotal -->
+    <div class="form-group">
+        <label asp-for="Subtotal" class="control-label">Subtotal</label>
+        <input asp-for="Subtotal" class="form-control" readonly id="Subtotal" />
+    </div>
+
+    <!-- Campo para mostrar el Total (Incluido IVA) -->
+    <div class="form-group">
+        <label asp-for="Total" class="control-label">Total (Incluido IVA 21%)</label>
+        <input asp-for="Total" class="form-control" readonly id="Total" />
+    </div>
+
+    <!-- Campo oculto para el IdSede (la mesa) -->
+    <input type="hidden" asp-for="IdSede" />
+
+    <!-- Campo oculto para el IdPedido -->
+    <input type="hidden" asp-for="IdPedido" />
+    <hr />
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+
+@section Scripts {
+    <script>
+        var productosPrecios = {}; // Objeto para almacenar precios de los productos
+
+        $(document).ready(function() {
+            // Cargar los precios de los productos al inicio
+            $.getJSON('@Url.Action("ObtenerPreciosProductos", "Productos")', function(data) {
+                // Llenamos el objeto productosPrecios con los datos devueltos
+                data.forEach(function(producto) {
+                    productosPrecios[producto.Id] = producto.PrecioVenta;
+                });
+            });
+
+            // Actualizar el precio cuando se selecciona un producto
+            $("#IdProducto").change(function() {
+                obtenerPrecio();
+            });
+        });
+
+        function obtenerPrecio() {
+            var productoId = $("#IdProducto").val(); // Obtener el ID del producto seleccionado
+
+            if (productoId && productosPrecios[productoId] !== undefined) {
+                var precioUnitario = productosPrecios[productoId]; // Obtener el precio desde productosPrecios
+
+                // Establecer el precio unitario en el campo correspondiente
+                $("#PrecioUnitario").val(precioUnitario.toFixed(2)); // Formatear a 2 decimales
+
+                // Llamar a la función para recalcular el subtotal y total
+                calcularSubtotalYTotal();
+            } else {
+                alert("El precio del producto no está disponible.");
+                $("#PrecioUnitario").val(""); // Limpiar el campo si no se encuentra el precio
+            }
+        }
+
+        function calcularSubtotalYTotal() {
+            var cantidad = parseInt($("#Cantidad").val()); // Obtener la cantidad
+            var precioUnitario = parseFloat($("#PrecioUnitario").val()); // Obtener el precio unitario
+
+            if (isNaN(cantidad) || isNaN(precioUnitario) || cantidad <= 0 || precioUnitario <= 0) {
+                // Si los valores no son válidos, no calcular
+                $("#Subtotal").val("");
+                $("#Total").val("");
+            } else {
+                var subtotal = cantidad * precioUnitario; // Calcular el subtotal
+                var total = subtotal * 1.21; // Aplicar IVA del 21%
+
+                // Mostrar los valores calculados en los campos correspondientes
+                $("#Subtotal").val(subtotal.toFixed(2)); // Formatear a 2 decimales
+                $("#Total").val(total.toFixed(2)); // Formatear a 2 decimales
+            }
+        }
+    </script>
+}

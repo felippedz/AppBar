@@ -1,0 +1,99 @@
+﻿@model AppBar3.Models.Producto
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Actualizar Producto</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Precio" class="control-label"></label>
+                <input asp-for="Precio" class="form-control" type="number" step="0.01" asp-format="{0:#.##}" oninput="actualizarPrecioVenta()" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @* <label asp-for="PrecioVenta" class="control-label"></label>
+                <input asp-for="PrecioVenta" class="form-control" type="number" readonly step="0.01" asp-format="{0:#.##}" />
+                <span asp-validation-for="PrecioVenta" class="text-danger"></span> *@
+                <label asp-for="PrecioVenta" class="control-label"></label>
+                <input asp-for="PrecioVenta" class="form-control" type="number" readonly step="0.01" asp-format="{0:#.##}" />
+                <span asp-validation-for="PrecioVenta" class="text-danger"></span>
+            </div>
+            <!-- Campo oculto para PrecioVenta -->
+            <input type="hidden" id="PrecioVentaHidden" name="PrecioVenta" value="@Model.PrecioVenta" />
+            <div class="form-group">
+                <label asp-for="Estado" class="control-label"></label>
+                <select asp-for="Estado" class="form-control">
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCategoria" class="control-label">Categoria</label>
+                <select asp-for="IdCategoria" class="form-control" asp-items="ViewBag.IdCategoria"></select>
+                <span asp-validation-for="IdCategoria" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdEnvase" class="control-label">Envase</label>
+                <select asp-for="IdEnvase" class="form-control" asp-items="ViewBag.IdEnvase"></select>
+                <span asp-validation-for="IdEnvase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdMarca" class="control-label">Marca</label>
+                <select asp-for="IdMarca" class="form-control" asp-items="ViewBag.IdMarca"></select>
+                <span asp-validation-for="IdMarca" class="text-danger"></span>
+            </div>
+            <hr/>
+            <div class="form-group">
+                <input type="submit" value="Actualizar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-danger">Regresar</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script>
+         function actualizarPrecioVenta() {
+        const precioInput = document.querySelector('[id="Precio"]');
+        const precioVentaInput = document.querySelector('[id="PrecioVenta"]');
+        const precioVentaHidden = document.getElementById('PrecioVentaHidden');  // Campo oculto
+
+        const precio = parseFloat(precioInput.value);
+
+        if (isNaN(precio) || precio < 0) {
+            precioVentaInput.value = ''; // Limpia el valor del precio de venta
+            precioVentaHidden.value = ''; // Limpia el valor del campo oculto
+        } else {
+            const precioVenta = precio * 1.20; // Calcula el 20% adicional
+            precioVentaInput.value = precioVenta.toFixed(2); // Muestra con dos decimales en el input visible
+            precioVentaHidden.value = precioVenta.toFixed(2); // Asigna el valor al campo oculto
+        }
+    }
+
+    // Asegúrate de que el evento de input dispare la función:
+    document.querySelector('[id="Precio"]').addEventListener('input', actualizarPrecioVenta);
+</script>

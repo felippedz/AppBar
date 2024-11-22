@@ -1,0 +1,113 @@
+CREATE DATABASE AppBar;
+USE AppBar;
+
+-- Tabla Documento
+CREATE TABLE Documento (
+    ID TINYINT PRIMARY KEY IDENTITY,
+    Tipo_Documento NCHAR(15),
+    Estado BIT CHECK (Estado IN (0, 1)) -- Solo permite 0 o 1
+);
+
+-- Tabla Sede
+CREATE TABLE Sede (
+    ID TINYINT PRIMARY KEY IDENTITY,
+    Nombre_Sede NCHAR(30),
+    Direccion NCHAR(60),
+    Correo NCHAR(60),
+    Estado BIT CHECK (Estado IN (0, 1)) -- Solo permite 0 o 1
+);
+
+-- Tabla Roles
+CREATE TABLE Roles (
+    ID TINYINT PRIMARY KEY IDENTITY,
+    Nombre_Rol NCHAR(15)
+);
+
+-- Tabla Mesas
+CREATE TABLE Mesas (
+    ID TINYINT PRIMARY KEY IDENTITY,
+    Nombre_Mesa NCHAR(10),
+    ID_Sede TINYINT FOREIGN KEY REFERENCES Sede(ID),
+    Estado BIT CHECK (Estado IN (0, 1)) -- Solo permite 0 o 1
+);
+
+-- Tabla Categoria_Producto
+CREATE TABLE Categoria_Producto (
+    ID TINYINT PRIMARY KEY IDENTITY,
+    Nombre_Categoria NCHAR(20),
+    Estado BIT CHECK (Estado IN (0, 1)) -- Solo permite 0 o 1
+);
+
+-- Tabla Envase_Producto
+CREATE TABLE Envase_Producto (
+    ID TINYINT PRIMARY KEY IDENTITY,
+    Nombre_Envase NCHAR(10),
+    Estado BIT CHECK (Estado IN (0, 1)) -- Solo permite 0 o 1
+);
+
+-- Tabla Marca_Producto
+CREATE TABLE Marca_Producto (
+    ID TINYINT PRIMARY KEY IDENTITY,
+    Nombre_Marca NCHAR(60),
+    Estado BIT CHECK (Estado IN (0, 1)) -- Solo permite 0 o 1
+);
+
+-- Tabla Usuario
+CREATE TABLE Usuario (
+    ID TINYINT PRIMARY KEY IDENTITY,
+    Nombre NCHAR(20),
+    Apellido NCHAR(20),
+    Documento NCHAR(20),
+    Correo NCHAR(60),
+    Password NCHAR(255),
+    Estado BIT CHECK (Estado IN (0, 1)), -- Solo permite 0 o 1
+    ID_Documento TINYINT FOREIGN KEY REFERENCES Documento(ID),
+    ID_Sede TINYINT FOREIGN KEY REFERENCES Sede(ID),
+    ID_Rol TINYINT FOREIGN KEY REFERENCES Roles(ID)
+);
+
+-- Tabla Producto
+CREATE TABLE Producto (
+    ID TINYINT PRIMARY KEY IDENTITY,
+    Nombre NCHAR(60),
+    Descripcion NCHAR(60),
+    Precio MONEY CHECK (Precio >= 0), -- No permite valores negativos
+    PrecioVenta MONEY CHECK (PrecioVenta >= 0), -- No permite valores negativos
+    Estado BIT CHECK (Estado IN (0, 1)), -- Solo permite 0 o 1
+    ID_Categoria TINYINT FOREIGN KEY REFERENCES Categoria_Producto(ID),
+    ID_Envase TINYINT FOREIGN KEY REFERENCES Envase_Producto(ID),
+    ID_Marca TINYINT FOREIGN KEY REFERENCES Marca_Producto(ID)
+);
+
+-- Tabla Inventario
+CREATE TABLE Inventario (
+    ID TINYINT PRIMARY KEY IDENTITY,
+    ID_Producto TINYINT FOREIGN KEY REFERENCES Producto(ID),
+    Tipo_Movimiento NCHAR(10) CHECK (Tipo_Movimiento IN ('Ingreso', 'Salida')), -- Registra el tipo de movimiento
+    Cantidad FLOAT CHECK (Cantidad > 0), -- Solo permite valores positivos
+    Fecha_Movimiento DATE NOT NULL, -- Fecha del movimiento
+    Usuario_ID TINYINT FOREIGN KEY REFERENCES Usuario(ID) -- Usuario que realizó el movimiento
+);
+
+-- Tabla Pedido
+CREATE TABLE Pedido (
+    ID TINYINT PRIMARY KEY IDENTITY,
+    Fecha_Pedido DATE,
+    Estado_Pedido NCHAR(50),
+    Total MONEY CHECK (Total >= 0), -- No permite valores negativos
+    Id_Metodo_pago TINYINT CHECK (Id_Metodo_pago >= 0), -- No permite valores negativos
+    ID_Mesa TINYINT FOREIGN KEY REFERENCES Mesas(ID)
+);
+
+-- Tabla Detalle_Pedido
+CREATE TABLE Detalle_Pedido (
+    ID TINYINT PRIMARY KEY IDENTITY,
+    Estado BIT CHECK (Estado IN (0, 1)), -- Solo permite 0 o 1
+    Cantidad TINYINT CHECK (Cantidad >= 0), -- No permite valores negativos
+    Precio_Unitario MONEY CHECK (Precio_Unitario >= 0), -- No permite valores negativos
+    Subtotal MONEY CHECK (Subtotal >= 0), -- No permite valores negativos
+    Total MONEY CHECK (Total >= 0), -- No permite valores negativos
+    ID_Pedido TINYINT FOREIGN KEY REFERENCES Pedido(ID),
+    ID_Producto TINYINT FOREIGN KEY REFERENCES Producto(ID),
+    ID_Sede TINYINT FOREIGN KEY REFERENCES Sede(ID)
+);

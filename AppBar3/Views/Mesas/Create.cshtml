@@ -1,0 +1,38 @@
+﻿@model AppBar3.Models.Mesa
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Nueva Mesa</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NombreMesa" class="control-label">Nombre Mesa</label>
+                <input asp-for="NombreMesa" class="form-control" />
+                <span asp-validation-for="NombreMesa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdSede" class="control-label">Sede</label>
+                <select asp-for="IdSede" class ="form-control" asp-items="ViewBag.IdSede"></select>
+            </div>
+            <hr/>
+            <div class="form-group">
+                <input type="submit" value="Agregar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index"class=" btn btn-danger">Regresar</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
